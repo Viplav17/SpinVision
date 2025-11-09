@@ -17,15 +17,22 @@ def take_picture(filename):
         cam = Picamera2()
         config = cam.create_still_configuration(main={"size": (1280, 720)})
         
-        sensor_size = cam.sensor_resolution
-        zoom_factor = 1.5
-        
-        crop_width = int(sensor_size[0] / zoom_factor)
-        crop_height = int(sensor_size[1] / zoom_factor)
-        crop_x = (sensor_size[0] - crop_width) // 2
-        crop_y = (sensor_size[1] - crop_height) // 2
-        
-        config["scaler"]["crop"] = (crop_x, crop_y, crop_width, crop_height)
+        # Try to set crop/zoom if scaler is available
+        try:
+            sensor_size = cam.sensor_resolution
+            zoom_factor = 1.5
+            
+            crop_width = int(sensor_size[0] / zoom_factor)
+            crop_height = int(sensor_size[1] / zoom_factor)
+            crop_x = (sensor_size[0] - crop_width) // 2
+            crop_y = (sensor_size[1] - crop_height) // 2
+            
+            if "scaler" in config:
+                config["scaler"]["crop"] = (crop_x, crop_y, crop_width, crop_height)
+            else:
+                print("Note: Scaler not available, using full sensor")
+        except Exception as e:
+            print(f"Note: Could not set crop/zoom: {e}")
         
         cam.configure(config)
         cam.start()
