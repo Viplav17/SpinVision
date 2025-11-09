@@ -1,0 +1,3 @@
+GEMINI_API_KEY = "your_gemini_api_key_here"
+MESHY_API_KEY = "your_meshy_api_key_here"
+
