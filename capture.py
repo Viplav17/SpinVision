@@ -107,7 +107,7 @@ def send_to_meshy(gemini_response, output_dir="3d_models"):
     
     os.makedirs(output_dir, exist_ok=True)
     
-    prompt = gemini_response[:600]
+    prompt = gemini_response[:400]
     print(f"\nTruncated prompt for Meshy (600 chars max): {prompt}")
     print(f"Truncated prompt length: {len(prompt)} characters")
     
