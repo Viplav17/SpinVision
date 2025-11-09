@@ -4,31 +4,10 @@ import time
 import os
 import sys
 import base64
-from gpiozero import Button
 from config import GEMINI_API_KEY, MESHY_API_KEY
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 MESHY_URL = "https://api.meshy.ai/openapi/v2"
-
-BUTTON_PIN = 2
-
-def wait_for_button():
-    try:
-        button = Button(BUTTON_PIN, pull_up=True)
-        print("=" * 60)
-        print("Waiting for button press...")
-        print(f"Button connected to GPIO {BUTTON_PIN}")
-        print("Press the button to start scanning")
-        print("=" * 60)
-        button.wait_for_press()
-        print("\nButton pressed! Starting scan...\n")
-        time.sleep(0.3)
-        return True
-    except Exception as e:
-        print(f"Button error: {e}")
-        print("Starting without button (auto-start in 3 seconds)...")
-        time.sleep(3)
-        return True
 
 def take_picture(filename):
     try:
@@ -262,8 +241,6 @@ def main():
     
     try:
         os.makedirs(folder, exist_ok=True)
-        
-        wait_for_button()
         
         print("=" * 60)
         print("Starting 3D Scan Process")
