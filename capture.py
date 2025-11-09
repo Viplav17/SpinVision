@@ -36,7 +36,19 @@ def take_picture(filename):
         path = os.path.join("images", filename)
         
         cam = Picamera2()
-        cam.configure(cam.create_still_configuration(main={"size": (1280, 720)}))
+        config = cam.create_still_configuration(main={"size": (1280, 720)})
+        
+        sensor_size = cam.sensor_resolution
+        zoom_factor = 1.5
+        
+        crop_width = int(sensor_size[0] / zoom_factor)
+        crop_height = int(sensor_size[1] / zoom_factor)
+        crop_x = (sensor_size[0] - crop_width) // 2
+        crop_y = (sensor_size[1] - crop_height) // 2
+        
+        config["scaler"]["crop"] = (crop_x, crop_y, crop_width, crop_height)
+        
+        cam.configure(config)
         cam.start()
         time.sleep(2)
         
@@ -69,7 +81,7 @@ def send_to_gemini(image_path):
             }
         },
         {
-            "text": "Analyze this image of an object. Provide a detailed description of the object's shape, structure, and key features that would help create an accurate 3D model."
+            "text": "Analyze this image and provide a highly detailed description of the object. Ignore the wooden platform or base completely. Focus exclusively on the object itself. Describe: 1) Object type and category (what is it?), 2) Exact dimensions and proportions (relative size, width, height, depth), 3) Shape details (geometric forms, curves, angles, edges, contours), 4) Surface characteristics (smooth, rough, textured, glossy, matte), 5) Colors and materials (exact colors, patterns, material type like metal, plastic, ceramic, etc.), 6) Depth and volume (3D structure, thickness, hollow or solid), 7) Fluidity and movement (if applicable, how it flows or moves), 8) Fine details (engravings, markings, textures, small features), 9) Structural elements (joints, connections, separate parts), 10) Overall geometry (symmetry, asymmetry, organic or geometric forms). Be extremely specific and detailed about every visible aspect of the object."
         }
     ]
     
